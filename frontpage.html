@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<!-- 
+	Library Activity Logger(LAL), Version 1.1
+	Copyright 2016, Brian Jameson, Blacksburg High School Class of 2017
+	Licensed under GPL Version 3 licenses.
+	Requires the ExcelPlus JavaScript Library
+	http://aymkdn.github.io/ExcelPlus/
+-->
+<html>
+	<head>
+		<title>Library Sign I/O</title>
+		<link rel="stylesheet" type="text/css" href="style.css">
+		<!-- This page is only usable if you have the ExcelPlus Javascript library installed to the same directory as this file. -->
+		<script type="text/javascript" src="excelapi/sheetjs.all.min.js"></script>
+		<script type="text/javascript" src="excelapi/excelplus-2.4.1.min.js"></script>
+		<script type="text/javascript" src="interaction.js"></script>
+	</head>
+	<body onload="tabSelect(event,'v')">
+		<noscript style="font-size:500%; color:red;">Scripts are disabled!  Please enable them to use this page.</noscript>
+		<ul class="tab">
+			<li>
+				<a href="#" class="tablinks" onclick="tabSelect(event,'v')">Sign In to Visit Library</a>
+			</li>
+			<li>
+				<a href="#" class="tablinks" onclick="tabSelect(event,'h')">Sign Out with a Hallpass</a>
+			</li>
+			<li>
+				<a href="#" class="tablinks" onclick="tabSelect(event,'c')">Class Visit</a>
+			</li>
+			<li>
+				<a href="#" class="tablinks" onclick="tabSelect(event,'a')">Attendance</a>
+			</li>
+			<li>
+				<a href="#" class="tablinks" onclick="tabSelect(event,'l')">Librarian Only</a>
+			</li>
+		</ul>
+		<div id="v" class="tabcontent">
+			<span>
+				<input type="text" id="vfname" placeholder="First Name">
+			</span>
+			<span>
+				<input type="text" id="vlname" placeholder="Last Name">
+			</span>
+			<span>
+				Reason: <select id="vreason">
+					<option>Work independently on a class assignment</option>
+					<option>Work on a class assignment with a partner/group</option>
+					<option>Read/look for a book</option>
+					<option>Lunch</option>
+					<option>Use the computer/printer/copier</option>
+					<option>Work with librarian</option>
+					<option>Virtual Virginia Student</option>
+					<option>Library Student Assistant</option>
+					<option>Tech Help Desk Intern</option>
+				</select>
+			</span>
+			<span>
+				<button type="button" onclick="submitData('v')">Submit</button>
+			</span>
+			<span>
+				<button type="button" onclick="loggedInOnly('v')" id="liov">View Logged In Only</button>
+			</span>
+			<div class="boxes">
+				<table style="width:100%" id="vdisplay">
+					<tr>
+						<th>Name</th>
+						<th>Time In</th>
+						<th>Time Out</th>
+						<th>Reason</th>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div id="c" class="tabcontent">
+			<span>
+				<input type="text" id="cfname" placeholder="First Name">
+			</span>
+			<span>
+				<input type="text" id="clname" placeholder="Last Name">
+			</span>
+			<span>
+				<input type="text" id="creason" placeholder="Reason">
+			</span>
+			<span>
+				Student Count: <input type="number" id="classsize">
+			</span>
+			<span>
+				<button type="button" onclick="submitData('c')">Submit</button>
+			</span>
+			<span>
+				<button type="button" onclick="loggedInOnly('c')" id="lioc">Logged In Only</button>
+			</span>
+			<div class="boxes">
+				<table style="width:100%" id="cdisplay">
+					<tr>
+						<th>Name</th>
+						<th>Time In</th>
+						<th>Time Out</th>
+						<th>Reason</th>
+						<th>Student Count</th>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div id="a" class="tabcontent">
+			<span>
+				<input type="text" id="afname" placeholder="First Name">
+			</span>
+			<span>
+				<input type="text" id="alname" placeholder="Last Name">
+			</span>
+			<span>
+				<button type="button" onclick="submitData('a')">Submit</button>
+			</span>
+		</div>
+		<div id="h" class="tabcontent">
+			<span>
+				<input type="text" id="hfname" placeholder="First Name">
+			</span>
+			<span>
+				<input type="text" id="hlname" placeholder="Last Name">
+			</span>
+			<span>
+				Destination: <select id="hdestination" onchange="hallPassTeachers()">
+					<option>Bathroom</option>
+					<option>Office</option>
+					<option>Nurse</option>
+					<option>Guidance</option>
+					<option>Student Resource Officer</option>
+					<option>Teacher</option>
+				</select>
+			</span>
+			<span id="moreinputs"></span>
+			<span>
+				<button type="button" onclick="submitData('h')">Submit</button>
+			</span>
+			<span>
+				<button type="button" onclick="loggedInOnly('h')" id="lioh">Logged In Only</button>
+			</span>
+			<div class="boxes">
+				<table style="width:100%" id="hdisplay">
+					<tr>
+						<th>Name</th>
+						<th>Time Out</th>
+						<th>Time In</th>
+						<th>Destination</th>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div id="l" class="tabcontent">
+			<span>
+				<input type="password" id="pwbox" placeholder="Password">
+			</span>
+			<span>
+				<button onclick="passWord('pwbox')">Submit</button>
+			</span>
+		</div>
+		<footer>&copy;Brian Jameson 2016, GPLv3.</footer>
+		</body>
+</html>
