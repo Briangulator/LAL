@@ -568,9 +568,9 @@ function submitData(caller){
 			
 			//Add the entry.
 			hallPass[hallPass.length] = new Array(name,
-													tStamp,
-													"<button type=\"button\" onclick=\"endEntry("+hallPass.length+", hallPass, \'hdisplay\')\">In</button>",
-													dest);
+				tStamp,
+				"<button type=\"button\" onclick=\"endEntry("+hallPass.length+", hallPass, \'hdisplay\')\">In</button>",
+				dest);
 			
 			//Reset the destination boxes and update the display
 			destBox.value = "Bathroom";
@@ -597,9 +597,9 @@ function submitData(caller){
 			
 			//Add the entry.
 			visitors[visitors.length] = new Array(name,
-													tStamp,
-													"<button type=\"button\" onclick=\"endEntry("+visitors.length+", visitors, \'vdisplay\')\">Out</button>",
-													document.getElementById("vreason").value);
+				tStamp,
+				"<button type=\"button\" onclick=\"endEntry("+visitors.length+", visitors, \'vdisplay\')\">Out</button>",
+				document.getElementById("vreason").value);
 			
 			//Reset the reason box and update the display
 			document.getElementById("vreason").value = "Work independently on a class assignment";
@@ -633,10 +633,10 @@ function submitData(caller){
 			
 			//Add the entry.
 			cVisits[cVisits.length] = new Array(name,
-												tStamp,
-												"<button type=\"button\" onclick=\"endEntry("+cVisits.length+", cVisits, \'cdisplay\')\">Out</button>",
-												document.getElementById("creason").value,
-												document.getElementById("classsize").value);
+				tStamp,
+				"<button type=\"button\" onclick=\"endEntry("+cVisits.length+", cVisits, \'cdisplay\')\">Out</button>",
+				document.getElementById("creason").value,
+				document.getElementById("classsize").value);
 			
 			//Reset the reason and class size boxes and update the display
 			constructDisplay(cVisits.slice(0), "cdisplay");
@@ -703,24 +703,24 @@ function passWord(pW){
 	if(passWordCheck(document.getElementById(pW).value)){
 		//If the password is correct, display what is REALLY in the Librarian Only tab.
 		document.getElementById("l").innerHTML="<p>\
-													<button type=\"button\" onclick=\"exportXLSX(true)\">Export Data</button>\
-												</p>\
-												<p>\
-													<object id=\"file-object\"></object>\
-													<button type=\"button\" onclick=\"addToXLSX()\">Add Data to Selected File</button>\
-												<a href=\"https://chrome.google.com/webstore/detail/downloads-overwrite-exist/fkomnceojfhfkgjgcijfahmgeljomcfk\">This Chrome extension is required to update an existing spreadsheet.</a>\
-												</p>\
-												<p>\
-													Schedule for Day:\
-													<select id=\"sselector\" onchange=\"schedule = document.getElementById(\"sselector\").value;\">\
-														<option value=\"normal\">Standard day</option>\
-														<option value=\"earlyReleaseOrClubDay\">Early Release/Club Day</option>\
-														<option value=\"oneHourDelay\">1 Hour Delay</option>\
-														<option value=\"twoHourDelay\">2 Hour Delay</option>\
-													</select>\
-												</p>\
-												<button type=\"button\" onclick=\"endVisitors(); endCVisits()\">Sign Out All Visitors</button>\
-												<button type=\"button\" onclick=\"closeMenu()\">Lock Librarian Menu</button>";
+				<button type=\"button\" onclick=\"exportXLSX(true)\">Export Data</button>\
+			</p>\
+			<p>\
+				<object id=\"file-object\"></object>\
+				<button type=\"button\" onclick=\"addToXLSX()\">Add Data to Selected File</button>\
+				<a href=\"https://chrome.google.com/webstore/detail/downloads-overwrite-exist/fkomnceojfhfkgjgcijfahmgeljomcfk\">This Chrome extension is required to update an existing spreadsheet.</a>\
+			</p>\
+			<p>\
+				Schedule for Day:\
+				<select id=\"sselector\" onchange=\"schedule = document.getElementById(\"sselector\").value;\">\
+					<option value=\"normal\">Standard day</option>\
+					<option value=\"earlyReleaseOrClubDay\">Early Release/Club Day</option>\
+					<option value=\"oneHourDelay\">1 Hour Delay</option>\
+					<option value=\"twoHourDelay\">2 Hour Delay</option>\
+				</select>\
+			</p>\
+			<button type=\"button\" onclick=\"endVisitors(); endCVisits()\">Sign Out All Visitors</button>\
+			<button type=\"button\" onclick=\"closeMenu()\">Lock Librarian Menu</button>";
 		
 		//Set up the schedule selector and file selector
 		document.getElementById("sselector").value = schedule;
@@ -745,7 +745,7 @@ function passWord(pW){
 function closeMenu(){
 	//Simple text replacement
 	document.getElementById("l").innerHTML = "<span><input type=\"password\" id=\"pwbox\" placeholder=\"Password\"></span>\
-												<span><button onclick=\"passWord('pwbox')\">Submit</button></span>";
+		<span><button onclick=\"passWord('pwbox')\">Submit</button></span>";
 }
 
 /**
