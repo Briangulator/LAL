@@ -316,20 +316,20 @@ function removeEntry(index, tgt){
 		//Erroneous visitor
 		case "vdisplay":
 			visitors.splice(index, 1);
-			constructDisplay(visitors, tgt);
+			constructDisplay(visitors.slice(0), tgt);
 			break;
 		
 		//Erroneous class
 		case "cdisplay":
 			cVisits.splice(index, 1);
-			constructDisplay(cVisits, tgt);
+			constructDisplay(cVisits.slice(0), tgt);
 			break;
 		
 		//Erroneous hallpass user
 		case "hdisplay":
 			tgtArray = hallPass;
 			hallPass.splice(index, 1);
-			constructDisplay(hallPass, tgt);
+			constructDisplay(hallPass.slice(0), tgt);
 			break;
 	}
 }
@@ -727,9 +727,9 @@ function passWord(pW){
 		epx.openLocal({"labelButton":"Select Excel File"}, function(){});
 		
 		//Refresh the displays
-		constructDisplay(hallPass, "hdisplay");
-		constructDisplay(visitors, "vdisplay");
-		constructDisplay(cVisits, "cdisplay");
+		constructDisplay(hallPass.slice(0), "hdisplay");
+		constructDisplay(visitors.slice(0), "vdisplay");
+		constructDisplay(cVisits.slice(0), "cdisplay");
 	}
 	else //Self-explanatory
 		alert("Incorrect password!");
@@ -746,6 +746,11 @@ function closeMenu(){
 	//Simple text replacement
 	document.getElementById("l").innerHTML = "<span><input type=\"password\" id=\"pwbox\" placeholder=\"Password\"></span>\
 		<span><button onclick=\"passWord('pwbox')\">Submit</button></span>";
+	
+	//Refresh the displays
+	constructDisplay(hallPass.slice(0), "hdisplay");
+	constructDisplay(visitors.slice(0), "vdisplay");
+	constructDisplay(cVisits.slice(0), "cdisplay");
 }
 
 /**
