@@ -14,9 +14,9 @@
 	The bell schedule for the school is defaulted to "normal".
 	Three switches are declared which change whether or not logged out students are hidden.
 */
-var hallPass = [["Name", "Time Out", "Time In", "Destination"/*, ""*/]],
-	visitors = [["Name", "Time In", "Time Out", "Reason"/*, ""*/]],
-	cVisits = [["Name", "Time In", "Time Out", "Reason", "Student Count"/*, ""*/]],
+var hallPass = [["Name", "Time Out", "Time In", "Destination"]],
+	visitors = [["Name", "Time In", "Time Out", "Reason"]],
+	cVisits = [["Name", "Time In", "Time Out", "Reason", "Student Count"]],
 	firstClass = [["Name", "Time", "Tardy?"]],
 	secondClass = [["Name", "Time", "Tardy?"]],
 	thirdClass = [["Name", "Time", "Tardy?"]],
