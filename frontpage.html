@@ -13,10 +13,10 @@
 		<!-- This page is only usable if you have the ExcelPlus Javascript library installed to the same directory as this file. -->
 		<script type="text/javascript" src="excelapi/sheetjs.all.min.js"></script>
 		<script type="text/javascript" src="excelapi/excelplus-2.4.1.min.js"></script>
-		<script type="text/javascript" src="interaction.js"></script>
+		<script type="text/javascript" src="interaction.min.js"></script>
 	</head>
 	<body onload="tabSelect(event,'v')">
-		<noscript style="font-size:500%; color:red;">Scripts are disabled!  Please enable them to use this page.</noscript>
+		<noscript style="font-size:300%; color:red;">Scripts are disabled!  Please enable them to use this page.</noscript>
 		<ul class="tab">
 			<li>
 				<a href="#" class="tablinks" onclick="tabSelect(event,'v')">Sign In to Visit Library</a>
@@ -34,6 +34,7 @@
 				<a href="#" class="tablinks" onclick="tabSelect(event,'l')">Librarian Only</a>
 			</li>
 		</ul>
+		<!-- Sign In to Visit Library -->
 		<div id="v" class="tabcontent">
 			<span>
 				<input type="text" id="vfname" placeholder="First Name">
@@ -71,48 +72,7 @@
 				</table>
 			</div>
 		</div>
-		<div id="c" class="tabcontent">
-			<span>
-				<input type="text" id="cfname" placeholder="First Name">
-			</span>
-			<span>
-				<input type="text" id="clname" placeholder="Last Name">
-			</span>
-			<span>
-				<input type="text" id="creason" placeholder="Reason">
-			</span>
-			<span>
-				Student Count: <input type="number" id="classsize">
-			</span>
-			<span>
-				<button type="button" onclick="submitData('c')">Submit</button>
-			</span>
-			<span>
-				<button type="button" onclick="loggedInOnly('c')" id="lioc">Logged In Only</button>
-			</span>
-			<div class="boxes">
-				<table style="width:100%" id="cdisplay">
-					<tr>
-						<th>Name</th>
-						<th>Time In</th>
-						<th>Time Out</th>
-						<th>Reason</th>
-						<th>Student Count</th>
-					</tr>
-				</table>
-			</div>
-		</div>
-		<div id="a" class="tabcontent">
-			<span>
-				<input type="text" id="afname" placeholder="First Name">
-			</span>
-			<span>
-				<input type="text" id="alname" placeholder="Last Name">
-			</span>
-			<span>
-				<button type="button" onclick="submitData('a')">Submit</button>
-			</span>
-		</div>
+		<!-- Sign Out with a Hallpass -->
 		<div id="h" class="tabcontent">
 			<span>
 				<input type="text" id="hfname" placeholder="First Name">
@@ -148,6 +108,51 @@
 				</table>
 			</div>
 		</div>
+		<!-- Class Visit -->
+		<div id="c" class="tabcontent">
+			<span>
+				<input type="text" id="cfname" placeholder="First Name">
+			</span>
+			<span>
+				<input type="text" id="clname" placeholder="Last Name">
+			</span>
+			<span>
+				<input type="text" id="creason" placeholder="Reason">
+			</span>
+			<span>
+				Student Count: <input type="number" id="classsize">
+			</span>
+			<span>
+				<button type="button" onclick="submitData('c')">Submit</button>
+			</span>
+			<span>
+				<button type="button" onclick="loggedInOnly('c')" id="lioc">Logged In Only</button>
+			</span>
+			<div class="boxes">
+				<table style="width:100%" id="cdisplay">
+					<tr>
+						<th>Name</th>
+						<th>Time In</th>
+						<th>Time Out</th>
+						<th>Reason</th>
+						<th>Student Count</th>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<!-- Attendance -->
+		<div id="a" class="tabcontent">
+			<span>
+				<input type="text" id="afname" placeholder="First Name">
+			</span>
+			<span>
+				<input type="text" id="alname" placeholder="Last Name">
+			</span>
+			<span>
+				<button type="button" onclick="submitData('a')">Submit</button>
+			</span>
+		</div>
+		<!-- Librarian Only -->
 		<div id="l" class="tabcontent">
 			<span>
 				<input type="password" id="pwbox" placeholder="Password">

@@ -839,4 +839,6 @@ function beginTimes(){
 }
 
 //Repeat the exportXLSX function every hour for data backup
-setInterval(exportXLSX(false), 360000);
+setInterval(function(){
+	exportXLSX(false);
+}, 360000);
