@@ -14,9 +14,9 @@
 	The bell schedule for the school is defaulted to "normal".
 	Three switches are declared which change whether or not logged out students are hidden.
 */
-var hallPass = [["Name", "Time Out", "Time In", "Destination"]],
-	visitors = [["Name", "Time In", "Time Out", "Reason"]],
-	cVisits = [["Name", "Time In", "Time Out", "Reason", "Student Count"]],
+var hallPass = [["Name", "Time Out", "Time In", "Destination"/*, ""*/]],
+	visitors = [["Name", "Time In", "Time Out", "Reason"/*, ""*/]],
+	cVisits = [["Name", "Time In", "Time Out", "Reason", "Student Count"/*, ""*/]],
 	firstClass = [["Name", "Time", "Tardy?"]],
 	secondClass = [["Name", "Time", "Tardy?"]],
 	thirdClass = [["Name", "Time", "Tardy?"]],
@@ -45,13 +45,13 @@ function addToXLSX(){
 	endAll();
 	
 	//Create in-function data storage so that the .shift() methods don't modify the actual data
-	var hp = hallPass,
-		vi = visitors,
-		cv = cVisits,
-		c1 = firstClass,
-		c2 = secondClass,
-		c3 = thirdClass,
-		c4 = fourthClass;
+	var hp = hallPass.slice(0),
+		vi = visitors.slice(0),
+		cv = cVisits.slice(0),
+		c1 = firstClass.slice(0),
+		c2 = secondClass.slice(0),
+		c3 = thirdClass.slice(0),
+		c4 = fourthClass.slice(0);
 	
 	//Gets rid of the first row header, which an existing file should have already.
 	hp.shift();
@@ -841,4 +841,4 @@ function beginTimes(){
 //Repeat the exportXLSX function every hour for data backup
 setInterval(function(){
 	exportXLSX(false);
-}, 360000);
+}, 3600000);
