@@ -14,9 +14,9 @@
 	The bell schedule for the school is defaulted to "normal".
 	Three switches are declared which change whether or not logged out students are hidden.
 */
-var hallPass = [["Name", "Time Out", "Time In", "Destination"/*, ""*/]],
-	visitors = [["Name", "Time In", "Time Out", "Reason"/*, ""*/]],
-	cVisits = [["Name", "Time In", "Time Out", "Reason", "Student Count"/*, ""*/]],
+var hallPass = [["Name", "Time Out", "Time In", "Destination"]],
+	visitors = [["Name", "Time In", "Time Out", "Reason", "Teacher"]],
+	cVisits = [["Name", "Time In", "Time Out", "Reason", "Student Count"]],
 	firstClass = [["Name", "Time", "Tardy?"]],
 	secondClass = [["Name", "Time", "Tardy?"]],
 	thirdClass = [["Name", "Time", "Tardy?"]],
@@ -589,7 +589,10 @@ function submitData(caller){
 				alert("You need to input a last name!");
 				return;
 			}
-			
+			if(document.getElementById("vteacher").value.length ==0){
+				alert("You need to input the teacher you came from!");
+				return;
+			}
 			//Get the name and then reset the name fields to null
 			name = document.getElementById("vfname").value+" "+document.getElementById("vlname").value;
 			document.getElementById("vfname").value = "";
@@ -599,10 +602,12 @@ function submitData(caller){
 			visitors[visitors.length] = new Array(name,
 				tStamp,
 				"<button type=\"button\" onclick=\"endEntry("+visitors.length+", visitors, \'vdisplay\')\">Out</button>",
-				document.getElementById("vreason").value);
+				document.getElementById("vreason").value,
+				document.getElementById("vteacher").value);
 			
 			//Reset the reason box and update the display
 			document.getElementById("vreason").value = "Work independently on a class assignment";
+			document.getElementById("vteacher").value = "";
 			constructDisplay(visitors.slice(0), "vdisplay");
 			break;
 		
