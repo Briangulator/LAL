@@ -589,10 +589,7 @@ function submitData(caller){
 				alert("You need to input a last name!");
 				return;
 			}
-			if(document.getElementById("vteacher").value.length ==0){
-				alert("You need to input the teacher you came from!");
-				return;
-			}
+			
 			//Get the name and then reset the name fields to null
 			name = document.getElementById("vfname").value+" "+document.getElementById("vlname").value;
 			document.getElementById("vfname").value = "";
@@ -607,7 +604,7 @@ function submitData(caller){
 			
 			//Reset the reason box and update the display
 			document.getElementById("vreason").value = "Work independently on a class assignment";
-			document.getElementById("vteacher").value = "";
+			document.getElementById("vteacher").value = "C. Baker";
 			constructDisplay(visitors.slice(0), "vdisplay");
 			break;
 		
