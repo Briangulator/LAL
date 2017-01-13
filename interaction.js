@@ -117,17 +117,17 @@ function monthWord(){
 	//It is functionally the same.
 	var d = new Date();
 	var month = new Array("January",
-							"February",
-							"March",
-							"April",
-							"May",
-							"June",
-							"July",
-							"August",
-							"September",
-							"October",
-							"November",
-							"December");
+		"February",
+		"March",
+		"April",
+		"May",
+		"June",
+		"July",
+		"August",
+		"September",
+		"October",
+		"November",
+		"December");
 	return month[d.getMonth()];
 }
 
