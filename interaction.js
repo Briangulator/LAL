@@ -1,6 +1,6 @@
 /*
 	Library Activity Logger(LAL), Version 1.1
-	Copyright 2016, Brian Jameson, Blacksburg High School Class of 2017
+	© 2017, Brian Jameson, Blacksburg High School
 	Licensed under GPL Version 3 licenses.
 	Requires the ExcelPlus JavaScript Library
 	http://aymkdn.github.io/ExcelPlus/
@@ -13,13 +13,13 @@
 	The bell schedule for the school is defaulted to "normal".
 	Three switches are declared which change whether or not logged out students are hidden.
 */
-var hallPass = [["Name", "Time Out", "Time In", "Destination"]],
-	visitors = [["Name", "Time In", "Time Out", "Reason", "Teacher"]],
-	cVisits = [["Name", "Time In", "Time Out", "Reason", "Student Count"]],
-	firstClass = [["Name", "Time", "Tardy?"]],
-	secondClass = [["Name", "Time", "Tardy?"]],
-	thirdClass = [["Name", "Time", "Tardy?"]],
-	fourthClass = [["Name", "Time", "Tardy?"]],
+var dataStorage = [["Name", "Time Out", "Time In", "Destination"],
+				["Name", "Time In", "Time Out", "Reason", "Teacher"],
+				["Name", "Time In", "Time Out", "Reason", "Student Count"],
+				["Name", "Time", "Tardy?"],
+				["Name", "Time", "Tardy?"],
+				["Name", "Time", "Tardy?"],
+				["Name", "Time", "Tardy?"]],
 	sheetNames = ["Hall Pass", "Visitors", "Class Visitors", "Class 1", "Class 2", "Class 3", "Class 4"],
 	schedule = "normal",
 	epx = new ExcelPlus(),
@@ -44,23 +44,15 @@ function addToXLSX(){
 	//Signs out all students so that there isn't HTML code in the saved file
 	endAll();
 	
-	//Create in-function data storage so that the .shift() methods don't modify the actual data
-	var sheets = [hallPass.slice(0),
-			visitors.slice(0),
-			cVisits.slice(0),
-			firstClass.slice(0),
-			secondClass.slice(0),
-			thirdClass.slice(0),
-			fourthClass.slice(0)];
-	
-	for (var i = 0; i < 7; i++){
+	//Create in-function data storage so that .shift() doesn't modify the actual data
+	for (var i = 0, sheet = dataStorage[i].slice(0); i < dataStorage.length; i++){
 		//Gets rid of the first row header, which an existing file should have already.
-		sheets[i].shift();
+		sheet.shift();
 		//Add the date to the end of each row, as data only needed an hour/minute timestamp up to this point.
-		sheets[i] = addDate(sheets[i]);
+		sheet = addDate(sheets);
 		//Select each sheet in the loaded file and write data to it
 		epx.selectSheet(sheetNames[i]);
-		writeData(epx, sheets[i]);
+		writeData(epx, sheet);
 	}
 	
 	//epx.saveAs(monthWord()+".xlsx"); //Use this if Ms. Christle wants monthly reports.  Better IMO than the current implementation.
@@ -117,11 +109,10 @@ function monthWord(){
 function loggedInOnly(caller){
 	//Switch based on what called this function
 	switch (caller){
-		
 		//Visitors tab
 		case "v":
 			//Update display
-			constructDisplay(visitors.slice(0), "vdisplay");
+			constructDisplay(dataStorage[1], "vdisplay");
 			document.getElementById("liov").innerHTML = lIOV ? "View Logged In Only" : "View All";
 			
 			//Flip switch
@@ -131,7 +122,7 @@ function loggedInOnly(caller){
 		//Hallpass tab
 		case "h":
 			//Update display
-			constructDisplay(hallPass.slice(0), "hdisplay");
+			constructDisplay(dataStorage[0], "hdisplay");
 			document.getElementById("lioh").innerHTML = lIOH ? "View Logged In Only" : "View All";
 			
 			//Flip switch
@@ -141,7 +132,7 @@ function loggedInOnly(caller){
 		//Class visit tab
 		case "c":
 			//Update display
-			constructDisplay(cVisits.slice(0), "cdisplay");
+			constructDisplay(dataStorage[2], "cdisplay");
 			document.getElementById("lioc").innerHTML = lIOC ? "View Logged In Only" : "View All";
 			
 			//Flip switch
@@ -161,7 +152,7 @@ function loggedInOnly(caller){
 	@param [2D Array] data The data to modify
 */
 function lIODisplay(data){
-	for (i = 0; i < data.length; i++){
+	for (var i = 0; i < data.length; i++){
 		
 		//The greatest length a time can have is 5, and the sign out button is far longer.
 		if (data[i][2].length <= 5){
@@ -182,8 +173,7 @@ function lIODisplay(data){
 	@param [2D Array] data The data to modify
 */
 function addDate(data){
-	var d = new Date();
-	for (i = data.length-1; i >= 0; i--)
+	for (var i = 0, d = new Date(); i < data.length; i++)
 		data[i].push(d.toLocaleDateString());
 	return data;
 }
@@ -196,14 +186,7 @@ function addDate(data){
 	@param [Boolean] end Whether or not to log out all students
 */
 function exportXLSX(end){
-	var ep = new ExcelPlus(),
-		sheets = [hallPass,
-				visitors,
-				cVisits,
-				firstClass,
-				secondClass,
-				thirdClass,
-				fourthClass];
+	var ep = new ExcelPlus();
 	
 	//Checks if we want to sign out everyone
 	if (end)
@@ -213,8 +196,8 @@ function exportXLSX(end){
 	ep.createFile(sheetNames);
 	
 	//Writes data to each sheet
-	for(var i = 0; i < 7; i++)
-		ep.write({"sheet":sheetNames[i], "content":sheets[i]});
+	for(var i = 0; i < dataStorage.length; i++)
+		ep.write({"sheet":sheetNames[i], "content":dataStorage[i]});
 	
 	//Exports using a timestamp as the filename, as this function will be used up to 1080 times a year.
 	var d = new Date();
@@ -230,8 +213,8 @@ function exportXLSX(end){
 */
 function tabSelect(evt,tab){
 	//This code is basically copypasta'd from http://www.w3schools.com/howto/howto_js_tabs.asp
-	var tabcontent = document.getElementsByClassName("tabcontent"), i;
-	var tablinks = document.getElementsByClassName("tablinks");
+	var tabcontent = document.getElementsByClassName("tabcontent"), i,
+		tablinks = document.getElementsByClassName("tablinks");
 	
 	//Don't display anything
 	for (i = 0; i < tabcontent.length; i++)
@@ -245,7 +228,7 @@ function tabSelect(evt,tab){
 	document.getElementById(tab).style.display = "block";
 	
 	//Set the correct button as active so the user knows which tab they're in
-	evt.currentTarget.className+=" active";
+	evt.currentTarget.className += " active";
 }
 
 /**
@@ -262,7 +245,7 @@ function tabSelect(evt,tab){
 function endEntry(index, dispArray, dispTarget){
 	//Replace the button(always index 2) with the current 12-hour time.  24-hour is better, but I have my orders.
 	dispArray[index][2] = getTime("string12");
-	constructDisplay(dispArray.slice(0), dispTarget);
+	constructDisplay(dispArray, dispTarget);
 }
 
 /**
@@ -278,21 +261,20 @@ function removeEntry(index, tgt){
 	switch (tgt){
 		//Erroneous visitor
 		case "vdisplay":
-			visitors.splice(index, 1);
-			constructDisplay(visitors.slice(0), tgt);
+			dataStorage[1].splice(index, 1);
+			constructDisplay(dataStorage[1], tgt);
 			break;
 		
 		//Erroneous class
 		case "cdisplay":
-			cVisits.splice(index, 1);
-			constructDisplay(cVisits.slice(0), tgt);
+			dataStorage[2].splice(index, 1);
+			constructDisplay(dataStorage[2], tgt);
 			break;
 		
 		//Erroneous hallpass user
 		case "hdisplay":
-			tgtArray = hallPass;
-			hallPass.splice(index, 1);
-			constructDisplay(hallPass.slice(0), tgt);
+			dataStorage[0].splice(index, 1);
+			constructDisplay(dataStorage[0], tgt);
 			break;
 	}
 }
@@ -319,10 +301,10 @@ function endAll(){
 	@params None
 */
 function endVisitors(){
-	for (var i = visitors.length-1; i > 0; i--)
+	for (var i = 0; i < dataStorage[1].length; i++)
 		//The sign out button has a length far greater than 10, and the timestamp there after endEntry() is never more than 5 long.
-		if (visitors[i][2].length > 10)
-			endEntry(i, visitors, "vdisplay");
+		if (dataStorage[1][i][2].length > 10)
+			endEntry(i, dataStorage[1], "vdisplay");
 }
 
 /**
@@ -333,10 +315,10 @@ function endVisitors(){
 	@params None
 */
 function endCVisits(){
-	for (var i = cVisits.length-1; i > 0; i--)
+	for (var i = 0; i < dataStorage[2].length; i++)
 		//The sign out button has a length far greater than 10, and the timestamp there after endEntry() is never more than 5 long.
-		if (cVisits[i][2].length > 10)
-			endEntry(i, cVisits, "cdisplay");
+		if (dataStorage[2][i][2].length > 10)
+			endEntry(i, dataStorage[2], "cdisplay");
 }
 
 /**
@@ -347,10 +329,10 @@ function endCVisits(){
 	@params None
 */
 function endHallPass(){
-	for (var i = hallPass.length-1; i > 0; i--)
+	for (var i = 0; i < dataStorage[0].length; i++)
 		//The sign in button has a length far greater than 10, and the timestamp there after endEntry() is never more than 5 long.
-		if (hallPass[i][2].length > 10)
-			endEntry(i, hallPass, "hdisplay");
+		if (dataStorage[0][i][2].length > 10)
+			endEntry(i, dataStorage[0], "hdisplay");
 }
 
 /**
@@ -363,10 +345,9 @@ function endHallPass(){
 	@param [String] caller A string identifying which display to update
 */
 function constructDisplay(dS, caller){
-	var dataSource = dS, //Make sure not to affect actual data with functions like .reverse()
+	var dataSource = dS.slice(0), //Make sure not to affect actual data with functions like .reverse()
 		dispTable = document.getElementById(caller), //Get the table to display data in
-		displayString = "", //Display starts empty and then fills
-		i, j; //Counters for the while loops(probably could have done for loops)
+		displayString = ""; //Display starts empty and then fills
 	
 	//If we only want to display the logged in students, call lIODisplay().  Only do so if the target display is set to logged-in only.
 	switch (caller){
@@ -390,7 +371,7 @@ function constructDisplay(dS, caller){
 	dataSource.unshift(dataSource.pop());
 	
 	//For each row, add a <tr> tag
-	for(i = 0; i < dataSource.length; i++){
+	for(var i = 0, j; i < dataSource.length; i++){
 		displayString += "<tr>";
 		//For each item in each row, add a <td> tag or a <th> if it's the first row header.
 		for(j = 0; j < dataSource[0].length; j++){
@@ -420,24 +401,21 @@ function constructDisplay(dS, caller){
 	@param [String] caller Identifies why the student is signing in, and therefore where their data should go
 */
 function submitData(caller){
-	var tStamp = getTime("string12"),
-		name;
+	var tStamp = getTime("string12"), name;
 	
+	//Data validation
+	if (document.getElementById(caller + "fname").value.length == 0) {
+		alert("You need to input a first name!");
+		return;
+	}
+	if (document.getElementById(caller + "lname").value.length == 0) {
+		alert("You need to input a last name!");
+		return;
+	}
 	//Change depending on where the input is coming from
 	switch (caller){
-		
 		//Attendance tab
 		case "a":
-			//Data validation
-			if(document.getElementById("afname").value.length == 0){
-				alert("You need to input a first name!");
-				return;
-			}
-			if(document.getElementById("alname").value.length == 0){
-				alert("You need to input a last name!");
-				return;
-			}
-			
 			//Get the name and then reset the name fields to null
 			name = document.getElementById("afname").value+" "+document.getElementById("alname").value;
 			document.getElementById("afname").value = "";
@@ -446,28 +424,28 @@ function submitData(caller){
 			//Changes where the data goes and whether the student is tardy depending on the time
 			switch (whichClass()){
 				case 0:
-					firstClass[firstClass.length] = new Array(name, tStamp, false);
+					dataStorage[3][dataStorage[3].length] = new Array(name, tStamp, false);
 					break;
 				case 1:
-					firstClass[firstClass.length] = new Array(name, tStamp, true);
+					dataStorage[3][dataStorage[3].length] = new Array(name, tStamp, true);
 					break;
 				case 2:
-					secondClass[secondClass.length] = new Array(name, tStamp, false);
+					dataStorage[4][dataStorage[4].length] = new Array(name, tStamp, false);
 					break;
 				case 3:
-					secondClass[secondClass.length] = new Array(name, tStamp, true);
+					dataStorage[4][dataStorage[4].length] = new Array(name, tStamp, true);
 					break;
 				case 4:
-					thirdClass[thirdClass.length] = new Array(name, tStamp, false);
+					dataStorage[5][dataStorage[5].length] = new Array(name, tStamp, false);
 					break;
 				case 5:
-					thirdClass[thirdClass.length] = new Array(name, tStamp, true);
+					dataStorage[5][dataStorage[5].length] = new Array(name, tStamp, true);
 					break;
 				case 6:
-					fourthClass[fourthClass.length] = new Array(name, tStamp, false);
+					dataStorage[6][dataStorage[6].length] = new Array(name, tStamp, false);
 					break;
 				case 7:
-					fourthClass[fourthClass.length] = new Array(name, tStamp, true);
+					dataStorage[6][dataStorage[6].length] = new Array(name, tStamp, true);
 					break;
 				//If the school day is over, there isn't any point to this program, so tell the student to go home
 				case 8:
@@ -477,7 +455,7 @@ function submitData(caller){
 					alert("Error in submitData()!");
 					return;
 			}
-			alert(name+" is now signed in!");
+			alert(name + " is now signed in!");
 			break;
 		
 		//Hallpass tab
@@ -485,90 +463,63 @@ function submitData(caller){
 			var destBox = document.getElementById("hdestination"),
 				dest = destBox.value;
 			
-			//Data validation
-			if(document.getElementById("hfname").value.length == 0){
-				alert("You need to input a first name!");
-				return;
-			}
-			if(document.getElementById("hlname").value.length == 0){
-				alert("You need to input a last name!");
-				return;
-			}
-			if(document.getElementById("hteacher")!=null){
+			if (document.getElementById("hteacher") != null) {
 				var teach = document.getElementById("hteacher").value;
-				if(teach.length == 0){
+				if (teach.length == 0) {
 					alert("You need to input the teacher you're going to!");
 					return;
 				}
-				dest = destBox.value+": "+teach;
+				dest += ": "+teach;
 			}
-			if(document.getElementById("hcounselor")!=null){
+			if (document.getElementById("hcounselor") != null) {
 				var couns = document.getElementById("hcounselor").value;
-				if(couns.length == 0){
+				if (couns.length == 0) {
 					alert("You need to input the counselor you're going to!");
 					return;
 				}
-				dest = destBox.value+": "+couns;
+				dest += ": " + couns;
 			}
 			
 			//Get the name and then reset the name fields to null
-			name = document.getElementById("hfname").value+" "+document.getElementById("hlname").value;
+			name = document.getElementById("hfname").value + " " + document.getElementById("hlname").value;
 			document.getElementById("hfname").value = "";
 			document.getElementById("hlname").value = "";
 			
 			//Add the entry.
-			hallPass[hallPass.length] = new Array(name,
+			dataStorage[0][dataStorage[0].length] = new Array(name,
 				tStamp,
-				"<button type=\"button\" onclick=\"endEntry("+hallPass.length+", hallPass, \'hdisplay\')\">In</button>",
+				"<button type=\"button\" onclick=\"endEntry(" + dataStorage[0].length + ", dataStorage[0], \'hdisplay\')\">In</button>",
 				dest);
 			
 			//Reset the destination boxes and update the display
 			destBox.value = "Bathroom";
 			hallPassTeachers();
-			constructDisplay(hallPass.slice(0), "hdisplay");
+			constructDisplay(dataStorage[0], "hdisplay");
 			break;
 		
 		//Visitors tab
 		case "v":
-			//Data validation
-			if(document.getElementById("vfname").value.length == 0){
-				alert("You need to input a first name!");
-				return;
-			}
-			if(document.getElementById("vlname").value.length == 0){
-				alert("You need to input a last name!");
-				return;
-			}
-			
 			//Get the name and then reset the name fields to null
-			name = document.getElementById("vfname").value+" "+document.getElementById("vlname").value;
+			name = document.getElementById("vfname").value + " " + document.getElementById("vlname").value;
 			document.getElementById("vfname").value = "";
 			document.getElementById("vlname").value = "";
 			
 			//Add the entry.
-			visitors[visitors.length] = new Array(name,
+			dataStorage[1][dataStorage[1].length] = new Array(name,
 				tStamp,
-				"<button type=\"button\" onclick=\"endEntry("+visitors.length+", visitors, \'vdisplay\')\">Out</button>",
+				"<button type=\"button\" onclick=\"endEntry(" + dataStorage[1].length + ", dataStorage[1], \'vdisplay\')\">Out</button>",
 				document.getElementById("vreason").value,
 				document.getElementById("vteacher").value);
 			
 			//Reset the reason box and update the display
 			document.getElementById("vreason").value = "Work independently on a class assignment";
 			document.getElementById("vteacher").value = "C. Baker";
-			constructDisplay(visitors.slice(0), "vdisplay");
+			constructDisplay(dataStorage[1], "vdisplay");
 			break;
 		
 		//Class visits tab
 		case "c":
 			//Data validation
-			if(document.getElementById("cfname").value.length == 0){
-				alert("You need to input a first name!");
-				return;
-			}
-			if(document.getElementById("clname").value.length == 0){
-				alert("You need to input a last name!");
-				return;
-			}
 			if(document.getElementById("creason").value.length == 0){
 				alert("You need to input a reason!");
 				return;
@@ -579,19 +530,19 @@ function submitData(caller){
 			}
 			
 			//Get the name and then reset the name fields to null
-			name = document.getElementById("cfname").value+" "+document.getElementById("clname").value;
+			name = document.getElementById("cfname").value + " " + document.getElementById("clname").value;
 			document.getElementById("cfname").value = "";
 			document.getElementById("clname").value = "";
 			
 			//Add the entry.
-			cVisits[cVisits.length] = new Array(name,
+			dataStorage[2][dataStorage[2].length] = new Array(name,
 				tStamp,
-				"<button type=\"button\" onclick=\"endEntry("+cVisits.length+", cVisits, \'cdisplay\')\">Out</button>",
+				"<button type=\"button\" onclick=\"endEntry(" + dataStorage[2].length + ", dataStorage[2], \'cdisplay\')\">Out</button>",
 				document.getElementById("creason").value,
 				document.getElementById("classsize").value);
 			
 			//Reset the reason and class size boxes and update the display
-			constructDisplay(cVisits.slice(0), "cdisplay");
+			constructDisplay(dataStorage[2], "cdisplay");
 			document.getElementById("creason").value = "";
 			document.getElementById("classsize").value = "";
 			break;
@@ -616,28 +567,20 @@ function getTime(format){
 		//Returns an array with hours and minutes
 		case "array":
 			return [h, m];
-			break;
 		
 		//Returns a string with the time in 12-hour format.
 		case "string12":
 			if(h > 12)
-				h-=12;
-			if(m < 10)
-				return h+":0"+m;
-			return h+":"+m;
-			break;
+				h -= 12;
+			return h + m < 10 ? ":0" : ":" + m;
 		
 		//Returns a string with the time in a 24-hour format.  Superior to 12-hour format, but is unused.
 		case "string24":
-			if(m < 10)
-				return h+":0"+m;
-			return h+":"+m;
-			break;
+			return h + m < 10 ? ":0" : ":" + m;
 		
 		//Returns the number of minutes passed today
 		case "minct":
-			return 60*h+m;
-			break;
+			return 60 * h + m;
 		
 		//Error just in case
 		default:
@@ -679,9 +622,9 @@ function passWord(pW){
 		epx.openLocal({"labelButton":"Select Excel File"}, function(){});
 		
 		//Refresh the displays
-		constructDisplay(hallPass.slice(0), "hdisplay");
-		constructDisplay(visitors.slice(0), "vdisplay");
-		constructDisplay(cVisits.slice(0), "cdisplay");
+		constructDisplay(dataStorage[0], "hdisplay");
+		constructDisplay(dataStorage[1], "vdisplay");
+		constructDisplay(dataStorage[2], "cdisplay");
 	}
 	else //Self-explanatory
 		alert("Incorrect password!");
@@ -700,9 +643,9 @@ function closeMenu(){
 		<span><button onclick=\"passWord('pwbox')\">Submit</button></span>";
 	
 	//Refresh the displays
-	constructDisplay(hallPass.slice(0), "hdisplay");
-	constructDisplay(visitors.slice(0), "vdisplay");
-	constructDisplay(cVisits.slice(0), "cdisplay");
+	constructDisplay(dataStorage[0], "hdisplay");
+	constructDisplay(dataStorage[1], "vdisplay");
+	constructDisplay(dataStorage[2], "cdisplay");
 }
 
 /**
@@ -744,7 +687,7 @@ function passWordCheck(pW){
 	//Make sure each character is the same as in the password
 	if (codes.length != pW.length)
 		return false;
-	for (i = pW.length-1; i >= 0; i--){
+	for (var i = 0; i < codes.length; i++){
 		if ((codes[i]) != pW.charCodeAt(i))
 			return false;
 	}
@@ -759,10 +702,8 @@ function passWordCheck(pW){
 	@params None
 */
 function whichClass(){
-	var times = beginTimes(), i = 0, time = getTime("minct");
-	while (time >= times[i]){
-		i++;//This loop is soo super sketchy.  If the school day has ended, the loop terminates because it reaches the end of the array, not because of the condition.
-	}
+	var times = beginTimes(), i, time = getTime("minct");
+	for (i = 0; i < times.length && time >= times[i]; i++){}
 	return i;
 }
 
@@ -778,13 +719,10 @@ function beginTimes(){
 	switch (schedule){
 		case "earlyReleaseOrClubDay":
 			return [486, 540, 546, 595, 601, 685, 691, 740];
-			break;
 		case "oneHourDelay":
 			return [546, 620, 626, 700, 706, 810, 816, 890];
-			break;
 		case "twoHourDelay":
 			return [606, 665, 671, 730, 736, 825, 831, 890];
-			break;
 		default:
 			return [486, 575, 581, 670, 676, 795, 801, 890];
 	}
