@@ -1,6 +1,5 @@
 /*
 	Library Activity Logger(LAL), Version 1.1
-	Backend Script
 	Copyright 2016, Brian Jameson, Blacksburg High School Class of 2017
 	Licensed under GPL Version 3 licenses.
 	Requires the ExcelPlus JavaScript Library
@@ -21,6 +20,7 @@ var hallPass = [["Name", "Time Out", "Time In", "Destination"]],
 	secondClass = [["Name", "Time", "Tardy?"]],
 	thirdClass = [["Name", "Time", "Tardy?"]],
 	fourthClass = [["Name", "Time", "Tardy?"]],
+	sheetNames = ["Hall Pass", "Visitors", "Class Visitors", "Class 1", "Class 2", "Class 3", "Class 4"],
 	schedule = "normal",
 	epx = new ExcelPlus(),
 	lIOV = false,
@@ -45,47 +45,23 @@ function addToXLSX(){
 	endAll();
 	
 	//Create in-function data storage so that the .shift() methods don't modify the actual data
-	var hp = hallPass.slice(0),
-		vi = visitors.slice(0),
-		cv = cVisits.slice(0),
-		c1 = firstClass.slice(0),
-		c2 = secondClass.slice(0),
-		c3 = thirdClass.slice(0),
-		c4 = fourthClass.slice(0);
+	var sheets = [hallPass.slice(0),
+			visitors.slice(0),
+			cVisits.slice(0),
+			firstClass.slice(0),
+			secondClass.slice(0),
+			thirdClass.slice(0),
+			fourthClass.slice(0)];
 	
-	//Gets rid of the first row header, which an existing file should have already.
-	hp.shift();
-	vi.shift();
-	cv.shift();
-	c1.shift();
-	c2.shift();
-	c3.shift();
-	c4.shift();
-	
-	//Add the date to the end of each row, as data only needed an hour/minute timestamp up to this point.
-	hp = addDate(hp);
-	vi = addDate(vi);
-	cv = addDate(cv);
-	c1 = addDate(c1);
-	c2 = addDate(c2);
-	c3 = addDate(c3);
-	c4 = addDate(c4);
-	
-	//Select each sheet and write data to it
-	epx.selectSheet("Hall Pass");
-	writeData(epx, hp);
-	epx.selectSheet("Visitors");
-	writeData(epx, vi);
-	epx.selectSheet("Class Visitors");
-	writeData(epx, cv);
-	epx.selectSheet("Class 1");
-	writeData(epx, c1);
-	epx.selectSheet("Class 2");
-	writeData(epx, c2);
-	epx.selectSheet("Class 3");
-	writeData(epx, c3);
-	epx.selectSheet("Class 4");
-	writeData(epx, c4);
+	for (var i = 0; i < 7; i++){
+		//Gets rid of the first row header, which an existing file should have already.
+		sheets[i].shift();
+		//Add the date to the end of each row, as data only needed an hour/minute timestamp up to this point.
+		sheets[i] = addDate(sheets[i]);
+		//Select each sheet in the loaded file and write data to it
+		epx.selectSheet(sheetNames[i]);
+		writeData(epx, sheets[i]);
+	}
 	
 	//epx.saveAs(monthWord()+".xlsx"); //Use this if Ms. Christle wants monthly reports.  Better IMO than the current implementation.
 	epx.saveAs("data.xlsx");//One big file for the whole year may become too big for Excel to open.
@@ -115,19 +91,19 @@ function writeData(ep, data){
 function monthWord(){
 	//This code is a slight modification of http://www.w3schools.com/jsref/jsref_getmonth.asp
 	//It is functionally the same.
-	var d = new Date();
-	var month = new Array("January",
-		"February",
-		"March",
-		"April",
-		"May",
-		"June",
-		"July",
-		"August",
-		"September",
-		"October",
-		"November",
-		"December");
+	var d = new Date(),
+		month = ["January",
+			"February",
+			"March",
+			"April",
+			"May",
+			"June",
+			"July",
+			"August",
+			"September",
+			"October",
+			"November",
+			"December"];
 	return month[d.getMonth()];
 }
 
@@ -144,45 +120,32 @@ function loggedInOnly(caller){
 		
 		//Visitors tab
 		case "v":
-			//Flips the switch and updates display
-			if (!lIOV){
-				lIOV = true;
-				constructDisplay(visitors.slice(0), "vdisplay");
-				document.getElementById("liov").innerHTML = "View All";
-				
-			}else{
-				lIOV = false;
-				constructDisplay(visitors.slice(0), "vdisplay");
-				document.getElementById("liov").innerHTML = "View Logged In Only";
-			}
+			//Update display
+			constructDisplay(visitors.slice(0), "vdisplay");
+			document.getElementById("liov").innerHTML = lIOV ? "View Logged In Only" : "View All";
+			
+			//Flip switch
+			lIOV = !lIOV;
 			break;
 		
 		//Hallpass tab
 		case "h":
-			//Flips the switch and updates display
-			if (!lIOH){
-				lIOH = true;
-				constructDisplay(hallPass.slice(0), "hdisplay");
-				document.getElementById("lioh").innerHTML = "View All";
-			}else{
-				lIOH = false;
-				constructDisplay(hallPass.slice(0), "hdisplay");
-				document.getElementById("lioh").innerHTML = "View Logged In Only";
-			}
+			//Update display
+			constructDisplay(hallPass.slice(0), "hdisplay");
+			document.getElementById("lioh").innerHTML = lIOH ? "View Logged In Only" : "View All";
+			
+			//Flip switch
+			lIOH = !lIOH;
 			break;
 		
 		//Class visit tab
 		case "c":
-			//Flips the switch and updates display
-			if (!lIOC){
-				lIOC = true;
-				constructDisplay(cVisits.slice(0), "cdisplay");
-				document.getElementById("lioc").innerHTML = "View All";
-			}else{
-				lIOC = false;
-				constructDisplay(cVisits.slice(0), "cdisplay");
-				document.getElementById("lioc").innerHTML = "View Logged In Only";
-			}
+			//Update display
+			constructDisplay(cVisits.slice(0), "cdisplay");
+			document.getElementById("lioc").innerHTML = lIOC ? "View Logged In Only" : "View All";
+			
+			//Flip switch
+			lIOC = !lIOC;
 			break;
 		
 		//Error message if called incorrectly
@@ -233,23 +196,25 @@ function addDate(data){
 	@param [Boolean] end Whether or not to log out all students
 */
 function exportXLSX(end){
-	var ep = new ExcelPlus();
+	var ep = new ExcelPlus(),
+		sheets = [hallPass,
+				visitors,
+				cVisits,
+				firstClass,
+				secondClass,
+				thirdClass,
+				fourthClass];
 	
 	//Checks if we want to sign out everyone
 	if (end)
 		endAll();
 	
 	//Creates the file
-	ep.createFile(["Class 1", "Class 2", "Class 3", "Class 4", "Hall Pass", "Visitors", "Class Visitors"]);
+	ep.createFile(sheetNames);
 	
 	//Writes data to each sheet
-	ep.write({"sheet":"Class 1", "content":firstClass});
-	ep.write({"sheet":"Class 2", "content":secondClass});
-	ep.write({"sheet":"Class 3", "content":thirdClass});
-	ep.write({"sheet":"Class 4", "content":fourthClass});
-	ep.write({"sheet":"Hall Pass", "content":hallPass});
-	ep.write({"sheet":"Visitors", "content":visitors});
-	ep.write({"sheet":"Class Visitors", "content":cVisits});
+	for(var i = 0; i < 7; i++)
+		ep.write({"sheet":sheetNames[i], "content":sheets[i]});
 	
 	//Exports using a timestamp as the filename, as this function will be used up to 1080 times a year.
 	var d = new Date();
@@ -268,15 +233,13 @@ function tabSelect(evt,tab){
 	var tabcontent = document.getElementsByClassName("tabcontent"), i;
 	var tablinks = document.getElementsByClassName("tablinks");
 	
-	//Don't display anyting
-	for (i = 0; i < tabcontent.length; i++){
+	//Don't display anything
+	for (i = 0; i < tabcontent.length; i++)
 		tabcontent[i].style.display = "none";
-	}
 	
 	//Set all tab buttons to inactive
-	for (i = 0; i < tablinks.length; i++){
+	for (i = 0; i < tablinks.length; i++)
 		tablinks[i].className = tablinks[i].className.replace(" active","");
-	}
 	
 	//Display the correct tab
 	document.getElementById(tab).style.display = "block";
@@ -356,11 +319,10 @@ function endAll(){
 	@params None
 */
 function endVisitors(){
-	for (i = visitors.length-1; i > 0; i--){
+	for (var i = visitors.length-1; i > 0; i--)
 		//The sign out button has a length far greater than 10, and the timestamp there after endEntry() is never more than 5 long.
 		if (visitors[i][2].length > 10)
 			endEntry(i, visitors, "vdisplay");
-	}
 }
 
 /**
@@ -371,11 +333,10 @@ function endVisitors(){
 	@params None
 */
 function endCVisits(){
-	for (i = cVisits.length-1; i > 0; i--){
+	for (var i = cVisits.length-1; i > 0; i--)
 		//The sign out button has a length far greater than 10, and the timestamp there after endEntry() is never more than 5 long.
 		if (cVisits[i][2].length > 10)
 			endEntry(i, cVisits, "cdisplay");
-	}
 }
 
 /**
@@ -386,11 +347,10 @@ function endCVisits(){
 	@params None
 */
 function endHallPass(){
-	for (i = hallPass.length-1; i > 0; i--){
+	for (var i = hallPass.length-1; i > 0; i--)
 		//The sign in button has a length far greater than 10, and the timestamp there after endEntry() is never more than 5 long.
 		if (hallPass[i][2].length > 10)
 			endEntry(i, hallPass, "hdisplay");
-	}
 }
 
 /**
@@ -406,8 +366,7 @@ function constructDisplay(dS, caller){
 	var dataSource = dS, //Make sure not to affect actual data with functions like .reverse()
 		dispTable = document.getElementById(caller), //Get the table to display data in
 		displayString = "", //Display starts empty and then fills
-		i = 0, //Counters for the while loops(probably could have done for loops)
-		j = 0;
+		i, j; //Counters for the while loops(probably could have done for loops)
 	
 	//If we only want to display the logged in students, call lIODisplay().  Only do so if the target display is set to logged-in only.
 	switch (caller){
@@ -431,23 +390,15 @@ function constructDisplay(dS, caller){
 	dataSource.unshift(dataSource.pop());
 	
 	//For each row, add a <tr> tag
-	while (i <= dataSource.length-1){
-		displayString+="<tr>";
+	for(i = 0; i < dataSource.length; i++){
+		displayString += "<tr>";
 		//For each item in each row, add a <td> tag or a <th> if it's the first row header.
-		while (j <= dataSource[0].length-1){
-			if(i == 0)
-				displayString+="<th>";
-			else
-				displayString+="<td>";
-			displayString+=dataSource[i][j];
-			if(i == 0)
-				displayString+="</th>";
-			else
-				displayString+="</td>";
+		for(j = 0; j < dataSource[0].length; j++){
+			displayString += i == 0 ? "<th>" : "<td>";
+			displayString += dataSource[i][j];
+			displayString += i == 0 ? "</th>" : "</td>";
 			j++;
 		}
-		//Reset inner loop
-		j = 0;
 		
 		//If the admin menu is open, add an X button to get rid of wrong or profane entries
 		if (document.getElementById("sselector") != null && i > 0)
@@ -455,7 +406,6 @@ function constructDisplay(dS, caller){
 		
 		//End table row
 		displayString+="</tr>";
-		i++;
 	}
 	
 	//Update the table with new contents
