@@ -13,13 +13,13 @@
 	The bell schedule for the school is defaulted to "normal".
 	Three switches are declared which change whether or not logged out students are hidden.
 */
-var dataStorage = [["Name", "Time Out", "Time In", "Destination"],
-				["Name", "Time In", "Time Out", "Reason", "Teacher"],
-				["Name", "Time In", "Time Out", "Reason", "Student Count"],
-				["Name", "Time", "Tardy?"],
-				["Name", "Time", "Tardy?"],
-				["Name", "Time", "Tardy?"],
-				["Name", "Time", "Tardy?"]],
+var dataStorage = [[["Name", "Time Out", "Time In", "Destination"]],
+				[["Name", "Time In", "Time Out", "Reason", "Teacher"]],
+				[["Name", "Time In", "Time Out", "Reason", "Student Count"]],
+				[["Name", "Time", "Tardy?"]],
+				[["Name", "Time", "Tardy?"]],
+				[["Name", "Time", "Tardy?"]],
+				[["Name", "Time", "Tardy?"]]],
 	sheetNames = ["Hall Pass", "Visitors", "Class Visitors", "Class 1", "Class 2", "Class 3", "Class 4"],
 	schedule = "normal",
 	epx = new ExcelPlus(),
@@ -572,11 +572,11 @@ function getTime(format){
 		case "string12":
 			if(h > 12)
 				h -= 12;
-			return h + m < 10 ? ":0" : ":" + m;
+			return h + (m < 10 ? ":0" : ":") + m;
 		
 		//Returns a string with the time in a 24-hour format.  Superior to 12-hour format, but is unused.
 		case "string24":
-			return h + m < 10 ? ":0" : ":" + m;
+			return h + (m < 10 ? ":0" : ":") + m;
 		
 		//Returns the number of minutes passed today
 		case "minct":
